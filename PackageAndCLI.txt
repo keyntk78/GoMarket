@@ -1,0 +1,27 @@
+//entity
+dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design --version 6.0.11
+dotnet add package Microsoft.EntityFrameworkCore.Design --version 6.0.13
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 6.0.13
+dotnet add package Microsoft.EntityFrameworkCore --version 6.0.13
+dotnet add package Microsoft.Extensions.DependencyInjection --version 6.0.1
+dotnet add package Microsoft.Extensions.Logging.Console --version 6.0.0
+dotnet add package Microsoft.Extensions.Logging --version 6.0.0
+dotnet add package Microsoft.EntityFrameworkCore.Tools --version 6.0.13
+
+// identity
+dotnet add package Microsoft.AspNetCore.Identity --version 2.2.0
+dotnet add package Microsoft.AspNetCore.Identity.EntityFrameworkCore --version 6.0.13
+dotnet add package Microsoft.AspNetCore.Identity.UI --version 6.0.13
+dotnet add package Microsoft.AspNetCore.Authentication --version 2.2.0
+dotnet add package Microsoft.AspNetCore.Http.Abstractions --version 2.2.0
+dotnet add package Microsoft.AspNetCore.Authentication.Cookies --version 2.2.0
+dotnet add package Microsoft.AspNetCore.Authentication.Facebook --version 6.0.13
+dotnet add package Microsoft.AspNetCore.Authentication.Google --version 6.0.13
+dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer --version 6.0.13
+dotnet add package Microsoft.AspNetCore.Authentication.MicrosoftAccount --version 6.0.13
+dotnet add package Microsoft.AspNetCore.Authentication.OAuth --version 2.2.0
+dotnet add package Microsoft.AspNetCore.Authentication.OpenIdConnect --version 6.0.13
+dotnet add package Microsoft.AspNetCore.Authentication.Twitter --version 6.0.13
+
+dotnet add package MailKit
+dotnet add package MimeKit
