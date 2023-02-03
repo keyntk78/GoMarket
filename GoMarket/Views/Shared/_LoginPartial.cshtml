@@ -1,0 +1,56 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using GoMarket.Models
+
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+
+
+@if (SignInManager.IsSignedIn(User))
+{
+   @* <li class="nav-item">
+        <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+    </li>*@
+@*    <li class="nav-item">
+        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+            <button id="logout" type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+        </form>
+    </li>
+*@
+    <li class="dropdown d-none d-md-block">
+        @UserManager.GetUserName(User)
+    </li>
+
+    <li class="dropdown d-none d-md-block">
+        <button class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButton" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="pe-7s-users"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingButton">
+            <li><a class="dropdown-item" id="login" asp-area="Identity" asp-page="/Account/Login">Thông tin</a></li>
+
+            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+@*                <button id="logout" type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+            *@
+            <li><button id="logout" type="submit" class="dropdown-item">Đăng xuất</button></li>
+
+            </form>
+           
+        </ul>
+    </li>
+}
+else
+{
+       <li class="dropdown d-none d-md-block">
+            <button class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButton" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="pe-7s-users"></i>
+          </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingButton">
+                    <li><a class="dropdown-item" id="login" asp-area="Identity" asp-page="/Account/Login">Đăng nhập</a></li>
+                    <li><a class="dropdown-item" id="login" id="register" asp-area="Identity" asp-page="/Account/Register">Đăng ký</a></li>
+
+            </ul>
+        </li>
+}
+
+  
+
+

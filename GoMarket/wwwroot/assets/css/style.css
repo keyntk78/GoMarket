@@ -16436,12 +16436,12 @@ blockquote .inner-content .user-name:before {
 }
 
 .header-search-area {
-  width: 730px;
+  width: 140vh;
 }
 
 @media (max-width: 1199.98px) {
   .header-search-area {
-    width: 520px;
+    width: 140vh;
   }
 }
 

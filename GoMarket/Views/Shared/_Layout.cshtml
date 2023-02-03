@@ -31,6 +31,8 @@
 
     <!-- Style CSS -->
     <link rel="stylesheet" href="~/assets/css/style.css">
+    <link rel="stylesheet" href="~/css/site.css">
+
 
 </head>
 
@@ -49,7 +51,7 @@
                                 <a href="index.html" class="header-logo">
                                     <img src="~/assets/images/logo/dark.png" alt="Header Logo">
                                 </a>
-                                <div class="header-search-area d-none d-lg-block">
+                                <div class="header-search-area_site d-none d-lg-block">
                                     <form action="#" class="header-searchbox">
                                         <input class="input-field" type="text" placeholder="Tìm kiếm sản phẩm ...">
                                         <button class="btn btn-outline-whisper btn-primary-hover" type="submit"><i class="pe-7s-search"></i></button>
@@ -57,17 +59,8 @@
                                 </div>
                                 <div class="header-right">
                                     <ul>
-                                        <li class="dropdown d-none d-md-block">
-                                            <button class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class="pe-7s-users"></i>
-                                            </button>
-                                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingButton">
-                                                <li><a class="dropdown-item" href="my-account.html">Thông tin</a></li>
-                                                <li><a class="dropdown-item" href="login-register.html">Đăng nhập</a></li>
-                                                <li><a class="dropdown-item" href="login-register.html">Đăng ký</a></li>
-
-                                            </ul>
-                                        </li>
+                                       
+                                        <partial name="_LoginPartial"/>
                                         <li class="d-none d-md-block">
                                             <a href="wishlist.html">
                                                 <i class="pe-7s-like"></i>
