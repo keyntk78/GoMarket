@@ -70,8 +70,8 @@ namespace GoMarket.Areas.Identity.Pages.Account
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
-            [Display(Name = "Nhập lại mật khẩu")]
-            [Compare("Password", ErrorMessage = "Mật khẩu nhập lại không chính xác.")]
+            [Display(Name = "Lập lại mật khẩu")]
+            [Compare("Password", ErrorMessage = "{0} không chính xác.")]
             public string ConfirmPassword { get; set; }
 
             [DataType(DataType.Text)]
@@ -96,6 +96,11 @@ namespace GoMarket.Areas.Identity.Pages.Account
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            foreach(var provider in ExternalLogins)
+            {
+                _logger.LogInformation(provider.Name);
+            }
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -112,8 +117,8 @@ namespace GoMarket.Areas.Identity.Pages.Account
                     PhoneNumber = Input.PhoneNumber,
                 };
 
-                await _userStore.SetUserNameAsync(user, Input.UserName, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                //await _userStore.SetUserNameAsync(user, Input.UserName, CancellationToken.None);
+                //await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)

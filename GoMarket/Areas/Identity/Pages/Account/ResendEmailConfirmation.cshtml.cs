@@ -46,8 +46,8 @@ namespace GoMarket.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
-            [EmailAddress]
+            [Required (ErrorMessage ="Phải nhập {0}")]
+            [EmailAddress (ErrorMessage ="Nhập {0} sai định dạng")]
             public string Email { get; set; }
         }
 
@@ -65,9 +65,9 @@ namespace GoMarket.Areas.Identity.Pages.Account
             var user = await _userManager.FindByEmailAsync(Input.Email);
             if (user == null)
             {
-                ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
+                ModelState.AddModelError(string.Empty, "Email không tồn tại. Hãy kiểm tra lại email và nhập lại.");
                 return Page();
-            }
+            } 
 
             var userId = await _userManager.GetUserIdAsync(user);
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -79,10 +79,10 @@ namespace GoMarket.Areas.Identity.Pages.Account
                 protocol: Request.Scheme);
             await _emailSender.SendEmailAsync(
                 Input.Email,
-                "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                "Xác nhận địa chỉ emai",
+                $"Bạn đã đăng ký tài khoản Hamric,hãy <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>bấm vào đây</a>để kích hoạt tài khoản.");
 
-            ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
+            ModelState.AddModelError(string.Empty, "Bạn cần truy cập vào email để biết cách xác thực tài khoản.");
             return Page();
         }
     }

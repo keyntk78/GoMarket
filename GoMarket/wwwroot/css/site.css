@@ -1,20 +1,20 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
 
 .breadcrumb-height_site {
@@ -41,11 +41,10 @@ body {
 
 .val-form {
     font-size: 15px;
-
 }
 
-.content-registerConfirmation{
-    height:400px
+.content-registerConfirmation {
+    height: 400px
 }
 
 .header-search-area_site {
@@ -57,3 +56,66 @@ body {
         width: 400px;
     }
 }
+
+*, *:before, *:after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+
+
+.new {
+    padding: 50px;
+}
+
+/**Css check ghi nhớ đăng nhập*/
+.form-group-site {
+    display: block;
+    margin-bottom: 15px;
+}
+
+    .form-group-site input {
+        padding: 0;
+        height: initial;
+        width: initial;
+        margin-bottom: 0;
+        display: none;
+        cursor: pointer;
+    }
+
+    .form-group-site label {
+        position: relative;
+        cursor: pointer;
+    }
+
+        .form-group-site label:before {
+            content: '';
+            -webkit-appearance: none;
+            background-color: transparent;
+            border: 1px solid #dee2e6;
+            box-shadow: #bac34e;
+            padding: 10px;
+            display: inline-block;
+            position: relative;
+            vertical-align: middle;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+
+    .form-group-site input:checked + label:after {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 2px;
+        left: 9px;
+        width: 6px;
+        height: 14px;
+        border: solid #bac34e;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+    }

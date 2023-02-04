@@ -46,44 +46,22 @@ namespace GoMarket.Areas.Identity.Pages.Account
             _emailSender = emailSender;
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
+      
         public string ProviderDisplayName { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public string ReturnUrl { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [TempData]
         public string ErrorMessage { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Required]
-            [EmailAddress]
+         
+            [Required (ErrorMessage ="Phải nhập {0}")]
+            [EmailAddress (ErrorMessage ="Nhập {0} sai định dạng")]
             public string Email { get; set; }
         }
         
@@ -99,21 +77,24 @@ namespace GoMarket.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null)
         {
+
+
             returnUrl = returnUrl ?? Url.Content("~/");
             if (remoteError != null)
             {
-                ErrorMessage = $"Error from external provider: {remoteError}";
+                ErrorMessage = $"Lỗi từ dịch vụ ngoài: {remoteError}";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
-                ErrorMessage = "Error loading external login information.";
+                ErrorMessage = "Không láy được thông tinh từ dịch vụ ngoài";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
 
             // Sign in the user with this external login provider if the user already has a login.
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+           
             if (result.Succeeded)
             {
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
@@ -125,6 +106,8 @@ namespace GoMarket.Areas.Identity.Pages.Account
             }
             else
             {
+                // - co tai khoan, chua lien ket => lien ket tai khoan voi dich vu ngoài
+                // chua co tai khoan => Tạo tài khoan, lien ket va dang nhap
                 // If the user does not have an account, then ask the user to create an account.
                 ReturnUrl = returnUrl;
                 ProviderDisplayName = info.ProviderDisplayName;
@@ -142,20 +125,81 @@ namespace GoMarket.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
-            // Get the information about the user from the external login provider
+           
+
             var info = await _signInManager.GetExternalLoginInfoAsync();
+
             if (info == null)
             {
-                ErrorMessage = "Error loading external login information during confirmation.";
+                ErrorMessage = "Lỗi lấy thông tin từ dịch vụ ngoài.";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
 
+
             if (ModelState.IsValid)
             {
-                var user = CreateUser();
+                var registeredUser = await _userManager.FindByEmailAsync(Input.Email);
+                string externalEmail = null;
+                AppUser externalAppUser = null;
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                if(info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
+                {
+                    externalEmail = info.Principal.FindFirstValue(ClaimTypes.Email);
+                }
+
+                if (externalEmail != null)
+                {
+                    externalAppUser = await _userManager.FindByEmailAsync(externalEmail);
+                }
+
+                if((registeredUser != null) && (externalAppUser != null))
+                {
+                    //externalEmail == InputEmail
+                    if(registeredUser.Id == externalAppUser.Id)
+                    {
+                        // lien ket tai khoan
+                        var resultLink = await _userManager.AddLoginAsync(registeredUser, info);
+                        if(resultLink.Succeeded)
+                        {
+                            await _signInManager.SignInAsync(registeredUser, isPersistent:false);
+                            return LocalRedirect(returnUrl);
+                        }
+                    } else
+                    {
+                        ModelState.AddModelError(string.Empty, "Không liên kết được tài khoản hãy sử dụng email khác");
+                        return Page(); 
+                    }
+                }
+
+                if((externalAppUser != null) && (registeredUser == null))
+                {
+                    ModelState.AddModelError(string.Empty, "Không hổ trợ tạo tài khoản mới - có email khác email từ dịch vụ ngoài");
+                    return Page();
+                } 
+
+                if ((externalAppUser == null) && (externalEmail == Input.Email))
+                {
+                    // Chưa  có tài khoản
+                    var newuser = new AppUser() { UserName = externalEmail, Email = externalEmail };
+
+                   var resultNewUser =  await _userManager.CreateAsync(newuser);
+                    if(resultNewUser.Succeeded)
+                    {
+                        await _userManager.AddLoginAsync(newuser, info);
+                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(newuser);
+                        await _userManager.ConfirmEmailAsync(newuser, code);
+
+                        await _signInManager.SignInAsync(newuser, isPersistent:false);
+
+                        return LocalRedirect(returnUrl);
+                    } else
+                    {
+                        ModelState.AddModelError(string.Empty, "Không tại được tài khoản mới");
+                        return Page();
+                    }
+                }
+
+                var user = new AppUser() { UserName = Input.Email, Email = Input.Email };
 
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
